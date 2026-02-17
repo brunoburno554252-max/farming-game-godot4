@@ -24,6 +24,9 @@ UIManager="*res://autoloads/ui_manager.gd"
 AudioManager="*res://autoloads/audio_manager.gd"
 DialogueManager="*res://autoloads/dialogue_manager.gd"
 DatabaseManager="*res://autoloads/database_manager.gd"
+FriendshipSystem="*res://autoloads/friendship_system.gd"
+SkillSystem="*res://autoloads/skill_system.gd"
+CraftingSystem="*res://autoloads/crafting_system.gd"
 
 [display]
 

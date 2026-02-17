@@ -18,6 +18,7 @@ var inventory_menu: Control = null
 var pause_menu: Control = null
 var shop_menu: Control = null
 var dialogue_box: Control = null
+var crafting_menu: Control = null
 
 ## Root container para todos os UI elements
 var _ui_root: Control
@@ -86,6 +87,14 @@ func _create_ui_components() -> void:
 		dialogue_box.set_script(DialogueScript)
 		dialogue_box.name = "DialogueBox"
 		_ui_root.add_child(dialogue_box)
+	
+	# Crafting Menu
+	var CraftScript := load("res://ui/menus/crafting_menu.gd")
+	if CraftScript:
+		crafting_menu = Control.new()
+		crafting_menu.set_script(CraftScript)
+		crafting_menu.name = "CraftingMenu"
+		_ui_root.add_child(crafting_menu)
 
 
 func _on_game_ready() -> void:
@@ -167,6 +176,12 @@ func open_pause() -> void:
 func open_shop(shop_name: String, items: Array[Dictionary]) -> void:
 	if shop_menu and shop_menu.has_method("open"):
 		shop_menu.open(shop_name, items)
+
+
+## Abre o crafting.
+func open_crafting() -> void:
+	if crafting_menu and crafting_menu.has_method("open"):
+		crafting_menu.open()
 
 
 ## Mostra/esconde o HUD.

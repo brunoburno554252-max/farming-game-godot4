@@ -143,6 +143,7 @@ func start_new_game(p_name: String, f_name: String, slot: int) -> void:
 	
 	# Inicializar banco de itens
 	ItemDatabase.initialize()
+	NPCDatabase.initialize()
 	
 	# Inicializar banco de dados com tabelas vazias
 	DatabaseManager.create_new_save(slot)
@@ -151,6 +152,9 @@ func start_new_game(p_name: String, f_name: String, slot: int) -> void:
 	TimeSystem.initialize_new_game()
 	WeatherSystem.initialize_new_game()
 	InventorySystem.initialize_new_game()
+	FriendshipSystem.initialize_new_game()
+	SkillSystem.initialize_new_game()
+	CraftingSystem.initialize_new_game()
 	
 	# Carregar a fazenda como location inicial
 	await LocationManager.load_location(Constants.LOCATION_FARM)
@@ -180,6 +184,9 @@ func save_game() -> void:
 	TimeSystem.save_data()
 	WeatherSystem.save_data()
 	InventorySystem.save_data()
+	FriendshipSystem.save_data()
+	SkillSystem.save_data()
+	CraftingSystem.save_data()
 	LocationManager.save_all_locations()
 	# PlayerController salva via LocationManager (posição, energia, etc.)
 	
@@ -200,6 +207,7 @@ func load_game(slot: int) -> void:
 	
 	# Inicializar banco de itens
 	ItemDatabase.initialize()
+	NPCDatabase.initialize()
 	
 	# Carregar dados do DB
 	var success := DatabaseManager.load_save(slot)
@@ -216,6 +224,9 @@ func load_game(slot: int) -> void:
 	TimeSystem.load_data()
 	WeatherSystem.load_data()
 	InventorySystem.load_data()
+	FriendshipSystem.load_data()
+	SkillSystem.load_data()
+	CraftingSystem.load_data()
 	
 	# Carregar a location onde o jogador estava
 	var last_location: String = game_data.get("current_location", Constants.LOCATION_FARM)
