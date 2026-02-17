@@ -19,6 +19,8 @@ var pause_menu: Control = null
 var shop_menu: Control = null
 var dialogue_box: Control = null
 var crafting_menu: Control = null
+var fishing_minigame: Control = null
+var elevator_menu: Control = null
 
 ## Root container para todos os UI elements
 var _ui_root: Control
@@ -95,6 +97,22 @@ func _create_ui_components() -> void:
 		crafting_menu.set_script(CraftScript)
 		crafting_menu.name = "CraftingMenu"
 		_ui_root.add_child(crafting_menu)
+	
+	# Fishing Minigame
+	var FishScript := load("res://ui/minigames/fishing_minigame.gd")
+	if FishScript:
+		fishing_minigame = Control.new()
+		fishing_minigame.set_script(FishScript)
+		fishing_minigame.name = "FishingMinigame"
+		_ui_root.add_child(fishing_minigame)
+	
+	# Elevator Menu
+	var ElevScript := load("res://ui/menus/elevator_menu.gd")
+	if ElevScript:
+		elevator_menu = Control.new()
+		elevator_menu.set_script(ElevScript)
+		elevator_menu.name = "ElevatorMenu"
+		_ui_root.add_child(elevator_menu)
 
 
 func _on_game_ready() -> void:
@@ -182,6 +200,18 @@ func open_shop(shop_name: String, items: Array[Dictionary]) -> void:
 func open_crafting() -> void:
 	if crafting_menu and crafting_menu.has_method("open"):
 		crafting_menu.open()
+
+
+## Abre o elevador da mina.
+func open_elevator() -> void:
+	if elevator_menu and elevator_menu.has_method("open"):
+		elevator_menu.open()
+
+
+## Inicia o minigame de pesca.
+func start_fishing_minigame(fish_data: Dictionary) -> void:
+	if fishing_minigame and fishing_minigame.has_method("start"):
+		fishing_minigame.start(fish_data)
 
 
 ## Mostra/esconde o HUD.

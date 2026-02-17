@@ -155,6 +155,7 @@ func start_new_game(p_name: String, f_name: String, slot: int) -> void:
 	FriendshipSystem.initialize_new_game()
 	SkillSystem.initialize_new_game()
 	CraftingSystem.initialize_new_game()
+	MineSystem.initialize_new_game()
 	
 	# Carregar a fazenda como location inicial
 	await LocationManager.load_location(Constants.LOCATION_FARM)

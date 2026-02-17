@@ -27,6 +27,8 @@ DatabaseManager="*res://autoloads/database_manager.gd"
 FriendshipSystem="*res://autoloads/friendship_system.gd"
 SkillSystem="*res://autoloads/skill_system.gd"
 CraftingSystem="*res://autoloads/crafting_system.gd"
+FishingSystem="*res://autoloads/fishing_system.gd"
+MineSystem="*res://autoloads/mine_system.gd"
 
 [display]
 
