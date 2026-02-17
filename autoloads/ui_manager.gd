@@ -1,19 +1,102 @@
 ## autoloads/ui_manager.gd
-## UIManager — Gerencia stack de menus e HUD.
-## SERÁ EXPANDIDO NA ETAPA 5 (UI).
+## UIManager — Gerencia stack de menus, HUD, e instanciação de UI.
+## Coordena todos os elementos visuais da interface.
+## Equivalente ao Game1.activeClickableMenu + HUD do Stardew Valley.
 extends CanvasLayer
+
+
+# =============================================================================
+# STATE
+# =============================================================================
 
 ## Stack de menus abertos (último = topo)
 var _menu_stack: Array[Control] = []
 
-## Referência ao HUD
+## Referências aos componentes de UI
 var hud: Control = null
+var inventory_menu: Control = null
+var pause_menu: Control = null
+var shop_menu: Control = null
+var dialogue_box: Control = null
 
+## Root container para todos os UI elements
+var _ui_root: Control
+
+
+# =============================================================================
+# LIFECYCLE
+# =============================================================================
 
 func _ready() -> void:
-	layer = 10  # UI sempre por cima
-	process_mode = Node.PROCESS_MODE_ALWAYS  # UI funciona mesmo com jogo pausado
+	layer = 10
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# Container raiz
+	_ui_root = Control.new()
+	_ui_root.name = "UIRoot"
+	_ui_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_ui_root)
+	
+	# Instanciar componentes de UI
+	_create_ui_components()
+	
+	# Conectar sinais
+	EventBus.game_ready.connect(_on_game_ready)
 
+
+func _create_ui_components() -> void:
+	# HUD
+	var HUDScript := load("res://ui/hud/hud.gd")
+	if HUDScript:
+		hud = Control.new()
+		hud.set_script(HUDScript)
+		hud.name = "HUD"
+		_ui_root.add_child(hud)
+	
+	# Inventory Menu
+	var InvScript := load("res://ui/menus/inventory_menu.gd")
+	if InvScript:
+		inventory_menu = Control.new()
+		inventory_menu.set_script(InvScript)
+		inventory_menu.name = "InventoryMenu"
+		inventory_menu.add_to_group("inventory_menu")
+		_ui_root.add_child(inventory_menu)
+	
+	# Pause Menu
+	var PauseScript := load("res://ui/menus/pause_menu.gd")
+	if PauseScript:
+		pause_menu = Control.new()
+		pause_menu.set_script(PauseScript)
+		pause_menu.name = "PauseMenu"
+		_ui_root.add_child(pause_menu)
+	
+	# Shop Menu
+	var ShopScript := load("res://ui/menus/shop_menu.gd")
+	if ShopScript:
+		shop_menu = Control.new()
+		shop_menu.set_script(ShopScript)
+		shop_menu.name = "ShopMenu"
+		_ui_root.add_child(shop_menu)
+	
+	# Dialogue Box
+	var DialogueScript := load("res://ui/dialogue/dialogue_box.gd")
+	if DialogueScript:
+		dialogue_box = Control.new()
+		dialogue_box.set_script(DialogueScript)
+		dialogue_box.name = "DialogueBox"
+		_ui_root.add_child(dialogue_box)
+
+
+func _on_game_ready() -> void:
+	# Mostrar HUD quando o jogo estiver pronto
+	if hud:
+		hud.visible = true
+
+
+# =============================================================================
+# MENU STACK
+# =============================================================================
 
 ## Abre um menu (empilha no stack).
 func open_menu(menu: Control) -> void:
@@ -24,7 +107,6 @@ func open_menu(menu: Control) -> void:
 	EventBus.menu_opened.emit(menu.name)
 	
 	if _menu_stack.size() == 1:
-		# Primeiro menu aberto: pausa o jogo
 		GameManager.pause_game()
 
 
@@ -56,11 +138,60 @@ func is_any_menu_open() -> bool:
 	return not _menu_stack.is_empty()
 
 
+## Retorna o menu no topo do stack.
+func get_top_menu() -> Control:
+	if _menu_stack.is_empty():
+		return null
+	return _menu_stack.back()
+
+
+# =============================================================================
+# CONVENIENCE METHODS
+# =============================================================================
+
+## Abre o inventário.
+func open_inventory() -> void:
+	if inventory_menu and inventory_menu.has_method("open"):
+		inventory_menu.open()
+
+
+## Abre o menu de pausa.
+func open_pause() -> void:
+	if pause_menu and pause_menu.has_method("open"):
+		pause_menu.open()
+
+
+## Abre uma loja.
+## [param shop_name] Nome da loja.
+## [param items] Array de dicts: [{item_id, price, stock}]
+func open_shop(shop_name: String, items: Array[Dictionary]) -> void:
+	if shop_menu and shop_menu.has_method("open"):
+		shop_menu.open(shop_name, items)
+
+
+## Mostra/esconde o HUD.
+func set_hud_visible(v: bool) -> void:
+	if hud:
+		hud.visible = v
+
+
+# =============================================================================
+# INPUT
+# =============================================================================
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause_menu"):
 		if is_any_menu_open():
 			close_top_menu()
 		elif GameManager.is_playing():
-			# Abrir menu de pause (será implementado na Etapa 5)
-			pass
+			open_pause()
+		get_viewport().set_input_as_handled()
+	
+	elif event.is_action_pressed("inventory"):
+		if is_any_menu_open():
+			# Se o inventário está aberto, fechar; senão ignorar
+			if get_top_menu() == inventory_menu:
+				close_top_menu()
+		elif GameManager.is_playing():
+			open_inventory()
 		get_viewport().set_input_as_handled()
