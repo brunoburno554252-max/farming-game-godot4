@@ -141,6 +141,9 @@ func start_new_game(p_name: String, f_name: String, slot: int) -> void:
 	
 	_change_state(Constants.GameState.LOADING)
 	
+	# Inicializar banco de itens
+	ItemDatabase.initialize()
+	
 	# Inicializar banco de dados com tabelas vazias
 	DatabaseManager.create_new_save(slot)
 	
@@ -194,6 +197,9 @@ func load_game(slot: int) -> void:
 	_change_state(Constants.GameState.LOADING)
 	
 	save_slot = slot
+	
+	# Inicializar banco de itens
+	ItemDatabase.initialize()
 	
 	# Carregar dados do DB
 	var success := DatabaseManager.load_save(slot)

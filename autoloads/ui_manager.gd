@@ -187,7 +187,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			open_pause()
 		get_viewport().set_input_as_handled()
 	
-	elif event.is_action_pressed("inventory"):
+	elif event.is_action_pressed("open_inventory"):
 		if is_any_menu_open():
 			# Se o inventário está aberto, fechar; senão ignorar
 			if get_top_menu() == inventory_menu:

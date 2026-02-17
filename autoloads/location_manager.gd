@@ -228,6 +228,13 @@ func load_location_data(location_id: String) -> void:
 # =============================================================================
 
 ## Limpa o cache completamente (ao voltar pro menu, por exemplo).
+## Descarrega a location atual e limpa referências.
+func unload_current_location() -> void:
+	_deactivate_current_location()
+	current_location_id = ""
+	current_location_node = null
+
+
 func clear_cache() -> void:
 	for loc in _location_cache.values():
 		if loc is Node:

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://beach_location"]
+
+[ext_resource type="Script" path="res://locations/game_location.gd" id="1"]
+
+[node name="Beach" type="Node2D"]
+script = ExtResource("1")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+
+[node name="TerrainFeatures" type="Node2D" parent="."]
+
+[node name="PlacedObjects" type="Node2D" parent="."]
